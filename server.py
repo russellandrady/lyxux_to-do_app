@@ -80,12 +80,17 @@ def createToDo():
         flash("Added", 'success')
         return redirect(url_for('dashboard'))
 
-@app.route('/dashboard/update-status', methods=['POST'])
-def updateStatus(id, completed):
+@app.route('/dashboard/update-todo/<int:id>', methods=['POST'])
+def updateToDo(id):
     if request.method == 'POST':
+        task = request.form['taskName']
+        completed = False
+        if request.form.get('completed') == 'on':
+            completed = True
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE todos SET completed=%s WHERE id=%s",
-                    (completed, id))
+        cur.execute("UPDATE todos SET task=%s,completed=%s  WHERE id=%s",
+                    (task, completed, id))
+        mysql.connection.commit()
         
         cur.execute("SELECT id, task, completed FROM todos WHERE user_id = %s", (session['id'],))
         todos = cur.fetchall()

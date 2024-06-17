@@ -56,11 +56,13 @@
           </div>
           {% endif %}
           <span>{{todo[1]}}</span>
-          <button class="editBtn"><i class="fa-solid fa-file-pen"></i></button>
-          
+          <button class="editBtn" data-url="{{ url_for('updateToDo', id=todo[0]) }}"><i class="fa-solid fa-file-pen"></i></button>
+
           <form action="{{ url_for('deleteToDo', id=todo[0]) }}" method="post">
-            <button type="submit" class="deleteBtn"><i class="fa-solid fa-trash"></i></button>
-        </form>
+            <button type="submit" class="deleteBtn">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
         </li>
         {% endfor %}
       </ul>
@@ -68,12 +70,54 @@
         <p><a href="{{url_for('signout')}}">Sign Out</a></p>
       </div>
     </div>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="editForm" method="post">
+          <label for="taskName">Task Name:</label><br />
+          <input type="text" id="taskName" name="taskName" /><br />
+          <label for="completed">Completed:</label><br />
+          <input type="checkbox" id="completed" name="completed" /><br />
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+    </div>
     <script>
-      const flashElement = document.querySelector('.flash');
-    
+      const flashElement = document.querySelector(".flash");
+
       setTimeout(() => {
-        flashElement.style.display = 'none';
-      }, 2000); 
+        flashElement.style.display = "none";
+      }, 2000);
+      var modal = document.getElementById("myModal");
+      var span = document.getElementsByClassName("close")[0];
+
+      document.querySelectorAll(".editBtn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var todoElement = this.parentElement;
+          var taskName = todoElement.querySelector("span").textContent;
+          var completed = todoElement
+            .querySelector(".checkingbox i")
+            .classList.contains("fa-solid");
+
+          var form = document.getElementById("editForm");
+          form.taskName.value = taskName;
+          form.completed.checked = completed;
+          form.action = this.dataset.url;
+          console.log(form.action);
+
+          modal.style.display = "block";
+        });
+      });
+
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
     </script>
   </body>
 </html>
