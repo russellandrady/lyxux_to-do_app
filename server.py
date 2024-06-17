@@ -23,11 +23,17 @@ def login():
         email = request.form['email']
         pwd = request.form['password']
         cur = mysql.connection.cursor()
-        cur.execute(f"SELECT username, email, password FROM users WHERE email='{email}'")
+        cur.execute(f"SELECT id, username, email, password FROM users WHERE email='{email}'")
         user = cur.fetchone()
-        if user and check_password_hash(user[2], pwd):  # Check if the user exists and password matches
-            session['username'] = user[0]
-            session['email'] = user[1]
+        if user and check_password_hash(user[3], pwd):  # Check if the user exists and password matches
+            session['username'] = user[1]
+            session['email'] = user[2]
+            session['id']=user[0]
+
+            cur.execute("SELECT id, task, completed FROM todos WHERE user_id = %s", (session['id'],))
+            todos = cur.fetchall()
+            session['todos'] = todos
+
             cur.close()
             return redirect(url_for('dashboard'))
         else:
@@ -57,6 +63,22 @@ def register():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/dashboard/create-todo', methods=['POST'])
+def createToDo():
+    if request.method == 'POST':
+        task = request.form['task']
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO todos (user_id, task, completed) VALUES (%s, %s, %s)", (session['id'], task, False))
+        mysql.connection.commit()
+        
+        cur.execute("SELECT id, task, completed FROM todos WHERE user_id = %s", (session['id'],))
+        todos = cur.fetchall()
+        session['todos'] = todos
+        cur.close()
+
+        flash("Added", 'success')
+        return redirect(url_for('dashboard'))
 
 if  __name__ == '__main__':
     app.run(debug = True)
