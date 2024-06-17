@@ -101,7 +101,7 @@ section a{
 }
 .flash {
     position: fixed;
-    top: 5px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px;
@@ -109,13 +109,14 @@ section a{
     text-align: center;
     border-radius: 10px;
     z-index: 1000;
+    opacity: 0.7;
 }
 .flash-success {
-    background-color: #4CAF50;
+    background-color: #84df87;
     color: white;
 }
 .flash-error {
-    background-color: #f44336;
+    background-color: #eb837c;
     color: white;
 }
 .flash-close {

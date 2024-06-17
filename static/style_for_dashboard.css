@@ -104,7 +104,7 @@ body {
     flex: 1;
 }
 
-.editBtn, .deleteBtn {
+.editBtn, .deleteBtn, .checkingbox {
     border: none;
     background: none;
     font-size: 20px;
@@ -117,6 +117,19 @@ body {
 .editBtn:hover, .deleteBtn:hover {
     color: #dfdfdf;
 }
+
+.fa-square-check:hover {
+    cursor: default; /* Ensure cursor stays default on hover */
+}
+.sign-up-link{
+    text-align: center;
+    font-size: 15px;
+    margin-top: 20px;
+}
+.sign-up-link a{
+    color: #000;
+    font-weight: 600;
+}
 .flash {
     padding: 10px;
     margin-bottom: 10px;
@@ -125,7 +138,7 @@ body {
 }
 .flash {
     position: fixed;
-    top: 5px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px;
@@ -133,13 +146,14 @@ body {
     text-align: center;
     border-radius: 10px;
     z-index: 1000;
+    opacity: 0.7;
 }
 .flash-success {
-    background-color: #4CAF50;
+    background-color: #84df87;
     color: white;
 }
 .flash-error {
-    background-color: #f44336;
+    background-color: #eb837c;
     color: white;
 }
 .flash-close {
@@ -148,3 +162,4 @@ body {
     right: 10px;
     cursor: pointer;
 }
+

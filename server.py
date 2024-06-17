@@ -80,5 +80,40 @@ def createToDo():
         flash("Added", 'success')
         return redirect(url_for('dashboard'))
 
+@app.route('/dashboard/update-status', methods=['POST'])
+def updateStatus(id, completed):
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE todos SET completed=%s WHERE id=%s",
+                    (completed, id))
+        
+        cur.execute("SELECT id, task, completed FROM todos WHERE user_id = %s", (session['id'],))
+        todos = cur.fetchall()
+        session['todos'] = todos
+        cur.close()
+
+        return redirect(url_for('dashboard'))
+
+@app.route('/dashboard/delete-todo/<int:id>', methods=['POST'])
+def deleteToDo(id):
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM todos WHERE id = %s", (id,))
+        mysql.connection.commit()
+
+        cur.execute("SELECT id, task, completed FROM todos WHERE user_id = %s", (session['id'],))
+        todos = cur.fetchall()
+        session['todos'] = todos
+        cur.close()
+
+        flash("Deleted", 'success')
+        return redirect(url_for('dashboard'))
+
+@app.route('/signout')
+def signout():
+    session.clear()
+    flash("Successfully signed out", 'success')
+    return redirect(url_for('login'))
+
 if  __name__ == '__main__':
     app.run(debug = True)

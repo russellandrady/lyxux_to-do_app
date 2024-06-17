@@ -55,5 +55,12 @@
         <p>Don't have account? <a href="{{url_for('register')}}">Sign Up</a></p>
       </div>
     </div>
+    <script>
+      const flashElement = document.querySelector('.flash');
+    
+      setTimeout(() => {
+        flashElement.style.display = 'none';
+      }, 2000);
+    </script>
   </body>
 </html>
