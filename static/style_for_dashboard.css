@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #dfdfdf;
+}
+
+.dash-header {
+    text-align: center;
+    margin: 20px 0 40px 0;
+}
+
+.dash-header header {
+    color: #333;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.todo-container {
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .todo-container {
+        width: 80%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .todo-container {
+        width: 95%;
+        padding: 10px;
+    }
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#todoInput {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+    text-align: center;
+}
+
+#addBtn {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    background-color: #222;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addBtn:hover {
+    background-color: #000;
+}
+
+#todoList {
+    list-style-type: none;
+}
+
+#todoList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#todoList li:last-child {
+    border-bottom: none;
+}
+
+#todoList li input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+#todoList li span {
+    flex: 1;
+}
+
+.editBtn, .deleteBtn {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #222;
+    transition: 0.4s;
+    margin: 0px 5px 0px 5px;
+}
+
+.editBtn:hover, .deleteBtn:hover {
+    color: #dfdfdf;
+}

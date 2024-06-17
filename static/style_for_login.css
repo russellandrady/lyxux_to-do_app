@@ -93,3 +93,34 @@ section a{
     color: #000;
     font-weight: 600;
 }
+.flash {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+.flash {
+    position: fixed;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px;
+    z-index: 1000;
+}
+.flash-success {
+    background-color: #4CAF50;
+    color: white;
+}
+.flash-error {
+    background-color: #f44336;
+    color: white;
+}
+.flash-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+}
