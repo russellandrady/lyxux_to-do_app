@@ -33,6 +33,7 @@
       <div class="dash-header">
         <header>To-Do List</header>
       </div>
+      
       <form method="post" action="/dashboard/create-todo">
         <div class="input-container">
           <input
@@ -44,6 +45,15 @@
           <button id="addBtn" type="submit">Add</button>
         </div>
       </form>
+      <div class="sort-container">
+        <label for="sortOrder">Sort by:</label>
+        <select id="sortOrder">
+          <option value="ascending">Ascending</option>
+          <option value="descending">Descending</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      
       <ul id="todoList">
         {% for todo in session['todos'] %}
         <li>
@@ -56,8 +66,8 @@
             <i class="fa-regular fa-square-check"></i>
           </div>
           {% endif %}
-          <span class="draggable-span">{{todo[1]}}</span>
-          <button class="editBtn" data-url="{{ url_for('updateToDo', id=todo[0]) }}"><i class="fa-solid fa-file-pen"></i></button>
+          <span class="draggable-span editBtn" data-url="{{ url_for('updateToDo', id=todo[0]) }}">{{todo[1]}}</span>
+
 
           <form action="{{ url_for('deleteToDo', id=todo[0]) }}" method="post">
             <button type="submit" class="deleteBtn">
@@ -67,6 +77,7 @@
         </li>
         {% endfor %}
       </ul>
+      
       <div class="sign-up-link">
         <p><a href="{{url_for('signout')}}">Sign Out</a></p>
       </div>
@@ -87,48 +98,86 @@
       // Flash timeout
       const flashElement = document.querySelector(".flash");
       if (flashElement) {
-          setTimeout(() => {
-              flashElement.style.display = "none";
-          }, 2000);
+        setTimeout(() => {
+          flashElement.style.display = "none";
+        }, 2000);
       }
-  
+    
       var modal = document.getElementById("myModal");
       var span = document.getElementsByClassName("close")[0];
-  
+    
       // Event listeners for each todo item
       document.querySelectorAll(".editBtn").forEach(function (button) {
-          button.addEventListener("click", function () {
-              var todoElement = this.parentElement;
-              var taskName = todoElement.querySelector("span").textContent;
-              var completed = todoElement.querySelector(".checkingbox i").classList.contains("fa-solid");
-  
-              var form = document.getElementById("editForm");
-              form.taskName.value = taskName;
-              form.completed.checked = completed;
-              form.action = this.dataset.url;
-  
-              modal.style.display = "block";
-          });
+        button.addEventListener("click", function () {
+          var todoElement = this.parentElement;
+          var taskName = todoElement.querySelector("span").textContent;
+          var completed = todoElement
+            .querySelector(".checkingbox i")
+            .classList.contains("fa-solid");
+    
+          var form = document.getElementById("editForm");
+          form.taskName.value = taskName;
+          form.completed.checked = completed;
+          form.action = this.dataset.url;
+    
+          modal.style.display = "block";
+        });
       });
-  
+    
       span.onclick = function () {
-          modal.style.display = "none";
+        modal.style.display = "none";
       };
-  
+    
       window.onclick = function (event) {
-          if (event.target == modal) {
-              modal.style.display = "none";
-          }
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
       };
-  
-      // make todo items dragable
-      new Sortable(document.getElementById('todoList'), {
-          animation: 150,
-          onEnd: function (/**Event*/evt) {
-  
-          }
+    
+      // Initialize Sortable
+      var sortable = new Sortable(document.getElementById("todoList"), {
+        animation: 150,
+        onEnd: function (evt) {
+          // After sorting, set the dropdown to 'custom'
+          document.getElementById("sortOrder").value = "custom";
+        },
       });
-  </script>
+    
+      // Sort by different orders
+      document.addEventListener("DOMContentLoaded", function () {
+        var todoList = document.getElementById("todoList");
+        var sortOrderSelect = document.getElementById("sortOrder");
+    
+        // Event listener for sorting selection
+        sortOrderSelect.addEventListener("change", function () {
+          var sortOrder = this.value;
+          sortTodos(sortOrder);
+        });
+    
+        function sortTodos(order) {
+          var items = Array.from(todoList.children);
+          if (order === "ascending") {
+            items.sort((a, b) =>
+              a.querySelector(".draggable-span").textContent.localeCompare(
+                b.querySelector(".draggable-span").textContent
+              )
+            );
+          } else if (order === "descending") {
+            items.sort((a, b) =>
+              b.querySelector(".draggable-span").textContent.localeCompare(
+                a.querySelector(".draggable-span").textContent
+              )
+            );
+          } // Custom order does not change the items
+    
+          items.forEach((item) => todoList.appendChild(item));
+        }
+    
+        // Initial sort
+        sortTodos(sortOrderSelect.value);
+      });
+    </script>
+    
   
   </body>
 </html>

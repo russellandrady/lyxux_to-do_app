@@ -119,7 +119,7 @@ body {
 }
 
 .fa-square-check:hover {
-    cursor: default; /* Ensure cursor stays default on hover */
+    cursor: default; 
 }
 .sign-up-link{
     text-align: center;
@@ -233,5 +233,28 @@ body {
     cursor: pointer;
   }
   .draggable-span {
-    cursor: pointer; /* Change cursor to a hand icon */
+    cursor: pointer; 
 }
+
+.sort-container {
+    text-align: right;
+    margin-bottom: 8px; 
+    margin-right: 15px; 
+  }
+  
+  .sort-container label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .sort-container select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  
