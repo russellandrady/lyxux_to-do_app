@@ -10,8 +10,8 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 #mysqlconfiguration
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD']=''
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD']=os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = 'todoappdb'
 
 #mysql initialization
@@ -50,7 +50,16 @@ def register():
         email = request.form['email']
         pwd = request.form['password']
         hashed_pwd = generate_password_hash(pwd)
+
         cur = mysql.connection.cursor()
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        user = cur.fetchone()
+
+        if user:
+            cur.close()
+            flash("User already exists with email.", 'error')
+            return render_template('register.html')
+
         cur.execute("insert into users (username, email, password) VALUES (%s, %s, %s)", (username, email, hashed_pwd))
         mysql.connection.commit()
         cur.close()
@@ -69,6 +78,15 @@ def createToDo():
     if request.method == 'POST':
         task = request.form['task']
         cur = mysql.connection.cursor()
+
+        cur.execute("SELECT id FROM todos WHERE user_id = %s AND task = %s", (session['id'], task))
+        existing_task = cur.fetchone()
+
+        if existing_task:
+            cur.close()
+            flash("Task already exists", 'error')
+            return render_template('dashboard.html')
+
         cur.execute("INSERT INTO todos (user_id, task, completed) VALUES (%s, %s, %s)", (session['id'], task, False))
         mysql.connection.commit()
         
