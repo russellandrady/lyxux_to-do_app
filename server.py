@@ -138,5 +138,10 @@ def signout():
     flash("Successfully signed out", 'success')
     return redirect(url_for('login'))
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
+
 if  __name__ == '__main__':
     app.run(debug = True)
