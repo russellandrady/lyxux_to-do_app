@@ -232,3 +232,6 @@ body {
     text-decoration: none;
     cursor: pointer;
   }
+  .draggable-span {
+    cursor: pointer; /* Change cursor to a hand icon */
+}

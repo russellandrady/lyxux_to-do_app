@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style_for_dashboard.css') }}"
@@ -55,7 +56,7 @@
             <i class="fa-regular fa-square-check"></i>
           </div>
           {% endif %}
-          <span>{{todo[1]}}</span>
+          <span class="draggable-span">{{todo[1]}}</span>
           <button class="editBtn" data-url="{{ url_for('updateToDo', id=todo[0]) }}"><i class="fa-solid fa-file-pen"></i></button>
 
           <form action="{{ url_for('deleteToDo', id=todo[0]) }}" method="post">
@@ -83,41 +84,51 @@
       </div>
     </div>
     <script>
+      // Flash timeout
       const flashElement = document.querySelector(".flash");
-
-      setTimeout(() => {
-        flashElement.style.display = "none";
-      }, 2000);
+      if (flashElement) {
+          setTimeout(() => {
+              flashElement.style.display = "none";
+          }, 2000);
+      }
+  
       var modal = document.getElementById("myModal");
       var span = document.getElementsByClassName("close")[0];
-
+  
+      // Event listeners for each todo item
       document.querySelectorAll(".editBtn").forEach(function (button) {
-        button.addEventListener("click", function () {
-          var todoElement = this.parentElement;
-          var taskName = todoElement.querySelector("span").textContent;
-          var completed = todoElement
-            .querySelector(".checkingbox i")
-            .classList.contains("fa-solid");
-
-          var form = document.getElementById("editForm");
-          form.taskName.value = taskName;
-          form.completed.checked = completed;
-          form.action = this.dataset.url;
-          console.log(form.action);
-
-          modal.style.display = "block";
-        });
+          button.addEventListener("click", function () {
+              var todoElement = this.parentElement;
+              var taskName = todoElement.querySelector("span").textContent;
+              var completed = todoElement.querySelector(".checkingbox i").classList.contains("fa-solid");
+  
+              var form = document.getElementById("editForm");
+              form.taskName.value = taskName;
+              form.completed.checked = completed;
+              form.action = this.dataset.url;
+  
+              modal.style.display = "block";
+          });
       });
-
+  
       span.onclick = function () {
-        modal.style.display = "none";
-      };
-
-      window.onclick = function (event) {
-        if (event.target == modal) {
           modal.style.display = "none";
-        }
       };
-    </script>
+  
+      window.onclick = function (event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+          }
+      };
+  
+      // make todo items dragable
+      new Sortable(document.getElementById('todoList'), {
+          animation: 150,
+          onEnd: function (/**Event*/evt) {
+  
+          }
+      });
+  </script>
+  
   </body>
 </html>
