@@ -38,7 +38,6 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             flash("Invalid data", 'error')
-            print(user[2], pwd)
             return render_template('login.html')
     else:
         return render_template('login.html')
