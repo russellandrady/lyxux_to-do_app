@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style_for_dashboard.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="flash flash-{{ category }}">
+      {{ message }}
+      <span
+        class="flash-close"
+        onclick="this.parentElement.style.display='none';"
+        >×</span
+      >
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <div class="todo-container">
+      <div class="dash-header">
+        <header>To-Do List</header>
+      </div>
+      
+      <form method="post" action="/dashboard/create-todo">
+        <div class="input-container">
+          <input
+            type="text"
+            name="task"
+            id="todoInput"
+            placeholder="Add your text"
+            required
+          />
+          <button id="addBtn" type="submit">Add</button>
+        </div>
+      </form>
+      <div class="sort-container">
+        <label for="sortOrder">Sort by:</label>
+        <select id="sortOrder">
+          <option value="ascending">Ascending</option>
+          <option value="descending">Descending</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      
+      <ul id="todoList">
+        {% for todo in session['todos'] %}
+        <li>
+          {% if todo[2] == 1 %}
+          <div class="checkingbox">
+            <i class="fa-solid fa-square-check"></i>
+          </div>
+          {% else %}
+          <div class="checkingbox">
+            <i class="fa-regular fa-square-check"></i>
+          </div>
+          {% endif %}
+          <span class="draggable-span editBtn" data-url="{{ url_for('updateToDo', id=todo[0]) }}">{{todo[1]}}</span>
+
+
+          <form action="{{ url_for('deleteToDo', id=todo[0]) }}" method="post">
+            <button type="submit" class="deleteBtn">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      
+      <div class="sign-up-link">
+        <p><a href="{{url_for('signout')}}">Sign Out</a></p>
+      </div>
+    </div>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="editForm" method="post">
+          <label for="taskName">Task Name:</label><br />
+          <input type="text" id="taskName" name="taskName" /><br />
+          <label for="completed">Completed:</label><br />
+          <input type="checkbox" id="completed" name="completed" /><br />
+          <input type="submit" value="Update" />
+        </form>
+      </div>
+    </div>
+    <script>
+      // Flash timeout
+      const flashElement = document.querySelector(".flash");
+      if (flashElement) {
+        setTimeout(() => {
+          flashElement.style.display = "none";
+        }, 2000);
+      }
+    
+      var modal = document.getElementById("myModal");
+      var span = document.getElementsByClassName("close")[0];
+    
+      // Event listeners for each todo item
+      document.querySelectorAll(".editBtn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var todoElement = this.parentElement;
+          var taskName = todoElement.querySelector("span").textContent;
+          var completed = todoElement
+            .querySelector(".checkingbox i")
+            .classList.contains("fa-solid");
+    
+          var form = document.getElementById("editForm");
+          form.taskName.value = taskName;
+          form.completed.checked = completed;
+          form.action = this.dataset.url;
+    
+          modal.style.display = "block";
+        });
+      });
+    
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+    
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    
+      // Initialize Sortable
+      var sortable = new Sortable(document.getElementById("todoList"), {
+        animation: 150,
+        onEnd: function (evt) {
+          // After sorting, set the dropdown to 'custom'
+          document.getElementById("sortOrder").value = "custom";
+        },
+      });
+    
+      // Sort by different orders
+      document.addEventListener("DOMContentLoaded", function () {
+        var todoList = document.getElementById("todoList");
+        var sortOrderSelect = document.getElementById("sortOrder");
+    
+        // Event listener for sorting selection
+        sortOrderSelect.addEventListener("change", function () {
+          var sortOrder = this.value;
+          sortTodos(sortOrder);
+        });
+    
+        function sortTodos(order) {
+          var items = Array.from(todoList.children);
+          if (order === "ascending") {
+            items.sort((a, b) =>
+              a.querySelector(".draggable-span").textContent.localeCompare(
+                b.querySelector(".draggable-span").textContent
+              )
+            );
+          } else if (order === "descending") {
+            items.sort((a, b) =>
+              b.querySelector(".draggable-span").textContent.localeCompare(
+                a.querySelector(".draggable-span").textContent
+              )
+            );
+          } // Custom order does not change the items
+    
+          items.forEach((item) => todoList.appendChild(item));
+        }
+    
+        // Initial sort
+        sortTodos(sortOrderSelect.value);
+      });
+    </script>
+    
+  
+  </body>
+</html>
